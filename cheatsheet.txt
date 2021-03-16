@@ -1,0 +1,2 @@
+# isntall testprc to create a new private blockchain for testing
+npm i -g ethereumjs-testrpc
