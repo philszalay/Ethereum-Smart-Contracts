@@ -1,2 +1,7 @@
-# isntall testprc to create a new private blockchain for testing
-npm i -g ethereumjs-testrpc
+# install testprc to create a new private blockchain for testing
+npm i -g ethereumjs-testrpci
+
+# compile and publish smart contracts with truffle on ropsten ETH blockchain
+# use reset option to redeploy the smart contracts, even if they have not changed
+truffle migrate --network=ropsten --reset
+
