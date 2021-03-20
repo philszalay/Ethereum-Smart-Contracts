@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity 0.5.16;
+pragma solidity ^0.5.16;
 
-import 'Owned.sol';
+import "./Owned.sol";
 
 contract ToDoList is Owned {
     uint256 public constant maxAmountOfTodosForUser = 100;

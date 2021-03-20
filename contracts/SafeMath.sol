@@ -1,8 +1,8 @@
-pragma solidity ^0.4.23;
+pragma solidity ^0.5.16;
 
 /**
  * Open Zeppelin SafeMath implementation.
- * https://github.com/ConsenSysMesh/openzeppelin-solidity/blob/master/contracts/math/SafeMath.sol
+ * https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/math/SafeMath.sol
  */
 
 /**
