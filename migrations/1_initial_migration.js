@@ -1,5 +1,5 @@
-const MathExamples = artifacts.require("./MathExamples.sol");
+const TodoList = artifacts.require("./TodoList.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(MathExamples);
+  deployer.deploy(TodoList);
 };
