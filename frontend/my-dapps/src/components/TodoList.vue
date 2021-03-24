@@ -1,9 +1,13 @@
 <template>
-  <div>
-    <h1>Using Account:</h1>
-    <span v-if="userAccount">{{userAccount}}</span>
-    <span v-else>Please connect this Site with MetaMask</span>
+  <div v-if="userAccount">
+  <h1>Using Account:</h1>
+  <span>{{userAccount}}</span>
+  <form @submit.prevent="addTodo">
+    <input v-model="todoTitleInput" placeholder="Todo title">
+    <button type="submit">Add Todo</button>
+  </form>
   </div>
+  <span v-else>Please connect this Site with MetaMask</span>
 </template>
 
 <script>
@@ -145,17 +149,38 @@ export default {
         }
       ],
       todoListInstance: null,
-      userAccount: null
+      userAccount: null,
+      todoTitleInput: ''
     }
   },
   beforeCreate() {
-    // Connect with MetaMask and set userAccount to first MetaMask account
+    // Connect with MetaMask and set userAccount to first MetaMask account.
     window.ethereum.enable().then(() => {
-      this.todoListInstance = new this.web3.eth.Contract(this.todoListAbi, this.TODO_LIST_CONTRACT_ADDRESS);
+      // Get contract instance from Blockchain.
+      this.todoListInstance = new this.web3.eth.Contract(this.todoListAbi, this.todoListContractAddress);
       this.web3.eth.getAccounts().then(accounts => {
         this.userAccount = accounts[0];
       })
     });
+  },
+  methods: {
+    generateTodos: function() {
+      return;
+    },
+    addTodo: function() {
+      console.log(this.todoTitleInput);
+      if(this.todoTitleInput.length <= 0) {
+        console.log('Todo title missing in function addTodo');
+        return;
+      }
+      
+      this.todoListInstance.methods.addTodo(this.web3.utils.asciiToHex(this.todoTitleInput)).send({
+        from: this.userAccount
+      }).then(() => {
+        // Update the todos after inserting a new one  
+        this.generateTodos();
+      });
+    }
   }
 };
 </script>
