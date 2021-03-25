@@ -1,11 +1,13 @@
 // SPDX-License-Identifier: GPL-3.0
 
-pragma solidity ^0.5.16;
+pragma solidity ^0.8.3;
 
 import "./Owned.sol";
 
 contract ToDoList is Owned {
     uint256 public constant maxAmountOfTodosForUser = 100;
+    
+    Todo[] internal allTodos;
 
     // owner => array of Todos
     mapping(address => Todo[maxAmountOfTodosForUser]) public todos;
@@ -21,13 +23,22 @@ contract ToDoList is Owned {
         bool isDone;
     }
 
+    function getAllTodos() view public onlyOwner() returns(Todo[] memory) {
+        return allTodos;
+    }
+
+    function getAccountTodos() view public returns(Todo[maxAmountOfTodosForUser] memory) {
+        return todos[msg.sender];
+    }
+
     function addTodo(bytes32 _content) public {
         Todo memory newTodo = Todo(lastIds[msg.sender], _content, block.timestamp, msg.sender, false);
         todos[msg.sender][lastIds[msg.sender]] = newTodo;
+        allTodos.push(newTodo);
     }
     
-    // A modifier can be added to a function and gets executed first. It handles the access to the function.
-    function markTodoAsDone(uint256 _id) public onlyOwner() {
+    function markTodoAsDone(uint256 _id) public {
+        require(todos[msg.sender][_id].owner == msg.sender);
         require(_id <= maxAmountOfTodosForUser);
         require(!todos[msg.sender][_id].isDone);
         

@@ -14,7 +14,7 @@
 import Web3 from 'web3';
 
 export default {
-  name: 'HelloWorld',
+  name: 'TodoList',
   data() {
     return {
       todoListContractAddress: '0x3Be85DfabA0f33Cb1568F1Bb0538d6F38F8e3fe2',
@@ -160,12 +160,14 @@ export default {
       this.todoListInstance = new this.web3.eth.Contract(this.todoListAbi, this.todoListContractAddress);
       this.web3.eth.getAccounts().then(accounts => {
         this.userAccount = accounts[0];
-      })
+      });
     });
   },
   methods: {
-    generateTodos: function() {
-      return;
+    getTodos: function() {
+      this.todoListInstance.methods.todos().call().then(todos => {
+        console.log(todos);
+      });
     },
     addTodo: function() {
       console.log(this.todoTitleInput);
@@ -178,7 +180,7 @@ export default {
         from: this.userAccount
       }).then(() => {
         // Update the todos after inserting a new one  
-        this.generateTodos();
+        this.getTodos();
       });
     }
   }
