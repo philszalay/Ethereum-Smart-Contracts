@@ -32,9 +32,13 @@ contract ToDoList is Owned {
     }
 
     function addTodo(bytes32 _content) public {
+        require(lastIds[msg.sender] < maxAmountOfTodosForUser);
+
         Todo memory newTodo = Todo(lastIds[msg.sender], _content, block.timestamp, msg.sender, false);
         todos[msg.sender][lastIds[msg.sender]] = newTodo;
         allTodos.push(newTodo);
+
+        lastIds[msg.sender]++;
     }
     
     function markTodoAsDone(uint256 _id) public {

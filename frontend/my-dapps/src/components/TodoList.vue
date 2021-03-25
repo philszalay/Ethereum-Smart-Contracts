@@ -1,11 +1,12 @@
 <template>
   <div v-if="userAccount">
-  <h1>Using Account:</h1>
-  <span>{{userAccount}}</span>
-  <form @submit.prevent="addTodo">
-    <input v-model="todoTitleInput" placeholder="Todo title">
-    <button type="submit">Add Todo</button>
-  </form>
+    <h1>Using Account:</h1>
+    <span>{{userAccount}}</span>
+    <form @submit.prevent="addTodo">
+      <input v-model="todoTitleInput" placeholder="Todo title">
+      <button type="submit" :disabled="todoTitleInput.length === 0">Add Todo</button>
+    </form>
+      <button @click="updateTodos()">Update Todos</button>
   </div>
   <span v-else>Please connect this Site with MetaMask</span>
 </template>
@@ -17,106 +18,108 @@ export default {
   name: 'TodoList',
   data() {
     return {
-      todoListContractAddress: '0xFb1f948690cc6475CE14992Db0A99A7a9ee0D058',
+      todoListContractAddress: '0xaebdbd7a9A884e6B9040c68B61e00b2907Dacd26',
       web3: new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ea14456f513454ea520fd84dc9083a9')),
       todoListAbi: [
+    {
+      "inputs": [
         {
-          "constant": false,
-          "inputs": [
-            {
-              "internalType": "bytes32",
-              "name": "_content",
-              "type": "bytes32"
-            }
-          ],
-          "name": "addTodo",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "name": "lastIds",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "maxAmountOfTodosForUser",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         },
         {
-          "constant": true,
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "",
-              "type": "address"
-            }
-          ],
-          "name": "lastIds",
-          "outputs": [
-            {
-              "internalType": "uint256",
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "name": "todos",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "id",
+          "type": "uint256"
         },
         {
-          "constant": false,
-          "inputs": [
-            {
-              "internalType": "uint256",
-              "name": "_id",
-              "type": "uint256"
-            }
-          ],
-          "name": "markTodoAsDone",
-          "outputs": [],
-          "payable": false,
-          "stateMutability": "nonpayable",
-          "type": "function"
+          "internalType": "bytes32",
+          "name": "content",
+          "type": "bytes32"
         },
         {
-          "constant": true,
-          "inputs": [],
-          "name": "maxAmountOfTodosForUser",
-          "outputs": [
-            {
-              "internalType": "uint256",
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
+          "internalType": "uint256",
+          "name": "creationDate",
+          "type": "uint256"
         },
         {
-          "constant": true,
-          "inputs": [],
+          "internalType": "address",
           "name": "owner",
-          "outputs": [
-            {
-              "internalType": "address",
-              "name": "",
-              "type": "address"
-            }
-          ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
+          "type": "address"
         },
         {
-          "constant": true,
-          "inputs": [
-            {
-              "internalType": "address",
-              "name": "",
-              "type": "address"
-            },
-            {
-              "internalType": "uint256",
-              "name": "",
-              "type": "uint256"
-            }
-          ],
-          "name": "todos",
-          "outputs": [
+          "internalType": "bool",
+          "name": "isDone",
+          "type": "bool"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "getAllTodos",
+      "outputs": [
+        {
+          "components": [
             {
               "internalType": "uint256",
               "name": "id",
@@ -143,14 +146,87 @@ export default {
               "type": "bool"
             }
           ],
-          "payable": false,
-          "stateMutability": "view",
-          "type": "function"
+          "internalType": "struct ToDoList.Todo[]",
+          "name": "",
+          "type": "tuple[]"
         }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [],
+      "name": "getAccountTodos",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "id",
+              "type": "uint256"
+            },
+            {
+              "internalType": "bytes32",
+              "name": "content",
+              "type": "bytes32"
+            },
+            {
+              "internalType": "uint256",
+              "name": "creationDate",
+              "type": "uint256"
+            },
+            {
+              "internalType": "address",
+              "name": "owner",
+              "type": "address"
+            },
+            {
+              "internalType": "bool",
+              "name": "isDone",
+              "type": "bool"
+            }
+          ],
+          "internalType": "struct ToDoList.Todo[100]",
+          "name": "",
+          "type": "tuple[100]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function",
+      "constant": true
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_content",
+          "type": "bytes32"
+        }
+      ],
+      "name": "addTodo",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_id",
+          "type": "uint256"
+        }
+      ],
+      "name": "markTodoAsDone",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
       ],
       todoListInstance: null,
       userAccount: null,
-      todoTitleInput: ''
+      todoTitleInput: '',
+      todos: []
     }
   },
   beforeCreate() {
@@ -164,24 +240,46 @@ export default {
     });
   },
   methods: {
-    getTodos: function() {
-      this.todoListInstance.methods.todos().call().then(todos => {
-        console.log(todos);
+    updateTodos: function() {
+      this.getAccountTodos().then(accountTodos => {
+        this.todos = [];
+        
+        accountTodos.forEach(todo => {
+          this.todos.push(this.web3.utils.hexToAscii(todo.content));
+        });
+        
+        console.log(this.todos);  
       });
     },
-    addTodo: function() {
-      console.log(this.todoTitleInput);
+    getAccountTodos: async function() {
+      try {
+          return await this.todoListInstance.methods.getAccountTodos().call({
+          from: this.userAccount
+          });
+      } catch(err) {
+        // TODO: Handle error
+      }
+    },
+    addTodo: async function() {
+      // TODO: Show loading spinner here
+
       if(this.todoTitleInput.length <= 0) {
         console.log('Todo title missing in function addTodo');
         return;
       }
       
-      this.todoListInstance.methods.addTodo(this.web3.utils.asciiToHex(this.todoTitleInput)).send({
-        from: this.userAccount
-      }).then(() => {
-        // Update the todos after inserting a new one  
-        this.getTodos();
-      });
+      try {
+        await this.todoListInstance.methods.addTodo(this.web3.utils.asciiToHex(this.todoTitleInput)).send({
+          from: this.userAccount
+        });
+
+        this.todoTitleInput = '';
+        this.updateTodos();
+
+        // TODO: Hide loading spinner here
+      } catch(err) {
+        // TODO: Handle error
+      }
     }
   }
 };
