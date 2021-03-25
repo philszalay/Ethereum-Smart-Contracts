@@ -17,7 +17,7 @@ export default {
   name: 'TodoList',
   data() {
     return {
-      todoListContractAddress: '0x3Be85DfabA0f33Cb1568F1Bb0538d6F38F8e3fe2',
+      todoListContractAddress: '0xFb1f948690cc6475CE14992Db0A99A7a9ee0D058',
       web3: new Web3(Web3.givenProvider || new Web3.providers.HttpProvider('https://ropsten.infura.io/v3/0ea14456f513454ea520fd84dc9083a9')),
       todoListAbi: [
         {
