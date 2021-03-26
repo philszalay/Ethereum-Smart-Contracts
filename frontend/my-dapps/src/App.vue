@@ -1,16 +1,22 @@
 <template>
   <v-app id="inspire">
-    <v-toolbar>
+    <v-app-bar app>
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
-      <v-toolbar-title>Dapps Universe</v-toolbar-title>
-        <span>Using Account: {{userAccount}}</span>
-    </v-toolbar>
+      <v-app-bar-title>Dapps Universe</v-app-bar-title>
+      <v-spacer></v-spacer>
+      <v-chip color="green" label>
+        Account: {{userAccount}}
+      </v-chip>
+      <!-- <v-chip label color="primary">
+        <v-icon>mdi-wrench</v-icon>
+      </v-chip> -->
+    </v-app-bar>
     <v-main>
       <v-container v-if="!userAccount" fluid>
           <span>Please connect this Site with MetaMask</span>
       </v-container>
       <v-container v-else fluid>
-        <todo-list :web-three="web3" :user-account="userAccount"></todo-list>
+        <todo-list :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></todo-list>
       </v-container>
     </v-main>
     <v-footer app>
@@ -32,6 +38,7 @@ export default {
   },
 
   data: () => ({
+    todoListComponentKey: 0,
     userAccount: null,
     web3: new Web3(
         Web3.givenProvider ||
@@ -40,7 +47,14 @@ export default {
           )
       )
   }),
-  beforeMount: function() {
+  mounted: function() {
+    window.ethereum.on('accountsChanged',(accounts) => {
+      this.userAccount = accounts[0];
+      // Force re-rendering of TodoList component
+      console.log('re render');
+      this.todoListComponentKey += 1;
+    });
+
     // Connect with MetaMask and set userAccount to first MetaMask account.
     window.ethereum.enable().then(() => {
       this.web3.eth.getAccounts().then((accounts) => {

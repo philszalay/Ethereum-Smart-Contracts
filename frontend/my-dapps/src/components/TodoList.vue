@@ -1,43 +1,41 @@
 <template>
   <div>
     <h1>Todo List Dapp</h1>
-    <div v-if="userAccount">
-      <v-row>
-        <v-col>
-          <v-form @submit.prevent="addTodo">
-            <v-text-field
-              v-model="todoTitleInput"
-              label="Add Todo"
-              required
-            ></v-text-field>
-            <v-btn type="submit" :loading="load.addTodo" :disabled="todoTitleInput.length === 0 || load.addTodo">Add Todo</v-btn>
-          </v-form>
-        </v-col>
-        <v-col>          
-          <v-simple-table>
-        <template v-slot:default>
-          <thead>
-            <tr>
-              <th class="text-left">Id</th>
-              <th class="text-left">Title</th>
-              <th class="text-left">Done</th>
-              <th class="text-right"><v-btn icon color="green" @click="updateTodos()"><v-icon>mdi-cached</v-icon></v-btn></th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="(todo, index) in todos" :key="index">
-              <td>{{ todo.id }}</td>
-              <td>{{ todo.title }}</td>
-              <td><v-chip :color="todo.isDone ? 'green' : 'red'" label>{{ todo.isDone }}</v-chip></td>
-              <td class="text-right" v-if="!todo.isDone" @click="!load.loadMarkAsDoneButton[todo.id] ? markTodoAsDone(todo.id) : null"><v-btn color="primary" :loading="load.loadMarkAsDoneButton[todo.id]"  :disabled="load.loadMarkAsDoneButton[todo.id]">Mark as done</v-btn></td>
-              <td v-else></td>
-            </tr>
-          </tbody>
-        </template>
-          </v-simple-table>
-        </v-col>
-      </v-row>
-    </div>
+    <v-row>
+      <v-col>
+        <v-form @submit.prevent="addTodo">
+          <v-text-field
+            v-model="todoTitleInput"
+            label="Add Todo"
+            required
+          ></v-text-field>
+          <v-btn type="submit" :loading="load.addTodo" :disabled="todoTitleInput.length === 0 || load.addTodo">Add Todo</v-btn>
+        </v-form>
+      </v-col>
+      <v-col>          
+        <v-simple-table>
+      <template v-slot:default>
+        <thead>
+          <tr>
+            <th class="text-left">Id</th>
+            <th class="text-left">Title</th>
+            <th class="text-left">Done</th>
+            <th class="text-right"><v-btn icon color="green" @click="updateTodos()"><v-icon>mdi-cached</v-icon></v-btn></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="(todo, index) in todos" :key="index">
+            <td>{{ todo.id }}</td>
+            <td>{{ todo.title }}</td>
+            <td><v-chip :color="todo.isDone ? 'green' : 'red'" label>{{ todo.isDone }}</v-chip></td>
+            <td class="text-right" v-if="!todo.isDone" @click="!load.loadMarkAsDoneButton[todo.id] ? markTodoAsDone(todo.id) : null"><v-btn color="primary" :loading="load.loadMarkAsDoneButton[todo.id]"  :disabled="load.loadMarkAsDoneButton[todo.id]">Mark as done</v-btn></td>
+            <td v-else></td>
+          </tr>
+        </tbody>
+      </template>
+        </v-simple-table>
+      </v-col>
+    </v-row>
   </div>
 </template>
 
@@ -320,7 +318,7 @@ export default {
         this.load.addTodo = false;
       } catch (err) {
         // TODO: Handle error
-        this.load.addTodo = true;
+        this.load.addTodo = false;
       }
     },
     markTodoAsDone: async function (id) {
