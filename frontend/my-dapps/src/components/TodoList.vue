@@ -1,14 +1,44 @@
 <template>
-  <div v-if="userAccount">
-    <h1>Using Account:</h1>
-    <span>{{userAccount}}</span>
-    <form @submit.prevent="addTodo">
-      <input v-model="todoTitleInput" placeholder="Todo title">
-      <button type="submit" :disabled="todoTitleInput.length === 0">Add Todo</button>
-    </form>
-      <button @click="updateTodos()">Update Todos</button>
+  <div>
+    <h1>Todo List Dapp</h1>
+    <div v-if="userAccount">
+      <span>Using Account: {{userAccount}}</span>
+      <form @submit.prevent="addTodo">
+        <md-field>
+          <label for="todoTitleInput">Todo Title</label>
+          <md-input name="todoTitleInput" v-model="todoTitleInput" />
+        </md-field>
+        <md-button type="submit" class="md-raised md-primary" :disabled="todoTitleInput.length === 0">Add Todo</md-button>
+      </form>
+      <md-table md-card v-loadingSpinner="load.loadTodos">
+        <md-table-toolbar>
+        <md-button class="md-raised md-primary" @click="updateTodos()">Update Todos</md-button>
+        <h1 class="md-title">Todos</h1>
+        </md-table-toolbar>
+        <md-table-row>
+          <md-table-head>Id</md-table-head>
+          <md-table-head>Title</md-table-head>
+          <md-table-head>Done</md-table-head>
+        </md-table-row>
+        <md-table-row v-for="(todo, index) in todos" :key="index">
+          <md-table-cell>
+            {{ todo.id }}
+          </md-table-cell>
+          <md-table-cell>
+            {{ todo.title }}
+          </md-table-cell>
+          <md-table-cell>
+            <md-badge class="md-square" v-bind:class="{ 'green': todo.isDone }" :md-content="'' + todo.isDone" />
+          </md-table-cell>
+          <md-table-cell>
+            <md-button v-if="!todo.isDone" class="md-raised" @click="markTodoAsDone(todo.id)">Mark as done</md-button>
+            <span v-else></span>
+          </md-table-cell>
+        </md-table-row>
+      </md-table>
+    </div>
+    <span v-else>Please connect this Site with MetaMask</span>
   </div>
-  <span v-else>Please connect this Site with MetaMask</span>
 </template>
 
 <script>
@@ -226,7 +256,10 @@ export default {
       todoListInstance: null,
       userAccount: null,
       todoTitleInput: '',
-      todos: []
+      todos: [],
+      load: {
+        loadTodos: false
+      }
     }
   },
   beforeCreate() {
@@ -236,19 +269,27 @@ export default {
       this.todoListInstance = new this.web3.eth.Contract(this.todoListAbi, this.todoListContractAddress);
       this.web3.eth.getAccounts().then(accounts => {
         this.userAccount = accounts[0];
+        this.updateTodos();
       });
     });
   },
   methods: {
     updateTodos: function() {
+      this.load.loadTodos = true;
       this.getAccountTodos().then(accountTodos => {
         this.todos = [];
         
-        accountTodos.forEach(todo => {
-          this.todos.push(this.web3.utils.hexToAscii(todo.content));
-        });
-        
-        console.log(this.todos);  
+        accountTodos.forEach((todo, index) => {
+          if (todo.id !== "0" || index === 0) {
+            this.todos.push({
+              title: this.web3.utils.hexToAscii(todo.content),
+              id: todo.id,
+              isDone: todo.isDone
+            });
+          }
+          
+          this.load.loadTodos = false;
+        });        
       });
     },
     getAccountTodos: async function() {
@@ -258,6 +299,7 @@ export default {
           });
       } catch(err) {
         // TODO: Handle error
+        this.load.loadTodos = false;
       }
     },
     addTodo: async function() {
@@ -280,6 +322,21 @@ export default {
       } catch(err) {
         // TODO: Handle error
       }
+    },
+    markTodoAsDone: async function(id) {
+      // TODO: Show loading spinner here
+
+      try {
+        await this.todoListInstance.methods.markTodoAsDone(id).send({
+          from: this.userAccount
+        });
+
+        this.updateTodos();
+
+        // TODO: Hide loading spinner here
+      } catch(err) {
+        // TODO: Handle error
+      }
     }
   }
 };
@@ -287,4 +344,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+  .green {
+    background-color: green !important;
+  }
 </style>
