@@ -20,7 +20,7 @@
       </v-container>
     </v-main>
     <v-footer app>
-      Impressum
+      
     </v-footer>
   </v-app>
 </template>
@@ -51,7 +51,6 @@ export default {
     window.ethereum.on('accountsChanged',(accounts) => {
       this.userAccount = accounts[0];
       // Force re-rendering of TodoList component
-      console.log('re render');
       this.todoListComponentKey += 1;
     });
 

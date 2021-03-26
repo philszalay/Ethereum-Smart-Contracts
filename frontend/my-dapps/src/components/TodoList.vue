@@ -1,20 +1,25 @@
 <template>
   <div>
-    <h1>Todo List Dapp</h1>
+    <h1 class="text-center">Todo List Dapp</h1>
     <v-row>
-      <v-col>
-        <v-form @submit.prevent="addTodo">
-          <v-text-field
-            v-model="todoTitleInput"
-            label="Add Todo"
-            required
-          ></v-text-field>
-          <v-btn type="submit" :loading="load.addTodo" :disabled="todoTitleInput.length === 0 || load.addTodo">Add Todo</v-btn>
-        </v-form>
-      </v-col>
+    <v-spacer></v-spacer>
+    <v-col>
+      <v-form @submit.prevent="addTodo">
+        <v-text-field
+          v-model="todoTitleInput"
+          label="Add Todo"
+          required
+        ></v-text-field>
+        <v-btn type="submit" :loading="load.addTodo" :disabled="todoTitleInput.length === 0 || load.addTodo">Add Todo</v-btn>
+      </v-form>
+    </v-col>
+    <v-spacer></v-spacer>
+    </v-row>
+    <v-row>
+      <v-spacer></v-spacer>
       <v-col>          
         <v-simple-table>
-      <template v-slot:default>
+        <template v-slot:default>
         <thead>
           <tr>
             <th class="text-left">Id</th>
@@ -32,9 +37,10 @@
             <td v-else></td>
           </tr>
         </tbody>
-      </template>
+        </template>
         </v-simple-table>
       </v-col>
+      <v-spacer></v-spacer>
     </v-row>
   </div>
 </template>
