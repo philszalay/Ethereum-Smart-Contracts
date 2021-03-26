@@ -1,27 +1,23 @@
 <template>
-  <div id="app">
-    <todo-list></todo-list>
-  </div>
+  <v-app id="inspire">
+    <v-container>
+      <todo-list></todo-list>
+    </v-container>
+  </v-app>
 </template>
 
 <script>
-import TodoList from './components/TodoList.vue'
+import TodoList from './components/TodoList';
 
 export default {
   name: 'App',
-  components: {
-    TodoList
-  }
-}
-</script>
 
-<style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
-}
-</style>
+  components: {
+    TodoList,
+  },
+
+  data: () => ({
+    //
+  }),
+};
+</script>

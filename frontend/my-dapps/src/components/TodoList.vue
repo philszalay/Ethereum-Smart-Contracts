@@ -8,34 +8,29 @@
           <label for="todoTitleInput">Todo Title</label>
           <md-input name="todoTitleInput" v-model="todoTitleInput" />
         </md-field>
-        <md-button type="submit" class="md-raised md-primary" :disabled="todoTitleInput.length === 0">Add Todo</md-button>
+        <v-btn type="submit" :disabled="todoTitleInput.length === 0">Add Todo</v-btn>
       </form>
-      <md-table md-card v-loadingSpinner="load.loadTodos">
-        <md-table-toolbar>
-        <md-button class="md-raised md-primary" @click="updateTodos()">Update Todos</md-button>
-        <h1 class="md-title">Todos</h1>
-        </md-table-toolbar>
-        <md-table-row>
-          <md-table-head>Id</md-table-head>
-          <md-table-head>Title</md-table-head>
-          <md-table-head>Done</md-table-head>
-        </md-table-row>
-        <md-table-row v-for="(todo, index) in todos" :key="index">
-          <md-table-cell>
-            {{ todo.id }}
-          </md-table-cell>
-          <md-table-cell>
-            {{ todo.title }}
-          </md-table-cell>
-          <md-table-cell>
-            <md-badge class="md-square" v-bind:class="{ 'green': todo.isDone }" :md-content="'' + todo.isDone" />
-          </md-table-cell>
-          <md-table-cell>
-            <md-button v-if="!todo.isDone" class="md-raised" @click="markTodoAsDone(todo.id)">Mark as done</md-button>
-            <span v-else></span>
-          </md-table-cell>
-        </md-table-row>
-      </md-table>
+      <v-simple-table dark>
+        <template v-slot:default>
+          <thead>
+            <tr>
+              <th class="text-left">Id</th>
+              <th class="text-left">Title</th>
+              <th class="text-left">Done</th>
+              <th class="text-right"><v-btn icon color="green" @click="updateTodos()"><v-icon>mdi-cached</v-icon></v-btn></th>
+            </tr>
+          </thead>
+          <tbody v-loading="load.loadTodos">
+            <tr v-for="(todo, index) in todos" :key="index">
+              <td>{{ todo.id }}</td>
+              <td>{{ todo.title }}</td>
+              <td><v-chip :color="todo.isDone ? 'green' : 'red'" label>{{ todo.isDone }}</v-chip></td>
+              <td class="text-right" v-if="!todo.isDone" @click="!load.loadMarkAsDoneButton[todo.id] ? markTodoAsDone(todo.id) : null"><v-btn color="primary" :loading="load.loadMarkAsDoneButton[todo.id]"  :disabled="load.loadMarkAsDoneButton[todo.id]">Mark as done</v-btn></td>
+              <td v-else></td>
+            </tr>
+          </tbody>
+        </template>
+      </v-simple-table>
     </div>
     <span v-else>Please connect this Site with MetaMask</span>
   </div>
@@ -258,7 +253,8 @@ export default {
       todoTitleInput: '',
       todos: [],
       load: {
-        loadTodos: false
+        loadTodos: false,
+        loadMarkAsDoneButton: []
       }
     }
   },
@@ -276,9 +272,9 @@ export default {
   methods: {
     updateTodos: function() {
       this.load.loadTodos = true;
-      this.getAccountTodos().then(accountTodos => {
-        this.todos = [];
-        
+      this.todos = [];
+
+      this.getAccountTodos().then(accountTodos => {        
         accountTodos.forEach((todo, index) => {
           if (todo.id !== "0" || index === 0) {
             this.todos.push({
@@ -306,7 +302,7 @@ export default {
       // TODO: Show loading spinner here
 
       if(this.todoTitleInput.length <= 0) {
-        console.log('Todo title missing in function addTodo');
+        console.err('Todo title missing in function addTodo');
         return;
       }
       
@@ -324,18 +320,17 @@ export default {
       }
     },
     markTodoAsDone: async function(id) {
-      // TODO: Show loading spinner here
-
+      this.$set(this.load.loadMarkAsDoneButton, id, true);
+      
       try {
         await this.todoListInstance.methods.markTodoAsDone(id).send({
           from: this.userAccount
         });
 
         this.updateTodos();
-
-        // TODO: Hide loading spinner here
+        this.$set(this.load.loadMarkAsDoneButton, id, false);
       } catch(err) {
-        // TODO: Handle error
+      this.$set(this.load.loadMarkAsDoneButton, id, false);
       }
     }
   }
@@ -344,7 +339,4 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-  .green {
-    background-color: green !important;
-  }
 </style>
