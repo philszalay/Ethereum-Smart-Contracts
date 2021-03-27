@@ -1,6 +1,15 @@
 <template>
   <div>
-    <h1 class="text-center">Todo List Dapp</h1>
+    <h1 class="text-center">Todo List Dapp
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn color="primary" @click="openEtherscanTab()" v-bind="attrs" v-on="on" rounded small>
+            <v-icon small>mdi-arrow-top-right</v-icon>
+          </v-btn>
+        </template>
+        <span>View on Etherscan</span>
+      </v-tooltip>
+    </h1>
     <v-row>
     <v-spacer></v-spacer>
     <v-col>
@@ -280,6 +289,10 @@ export default {
       this.todos = [];
 
       this.getAccountTodos().then((accountTodos) => {
+        if (!accountTodos) {
+          return;
+        }
+
         accountTodos.forEach((todo, index) => {
           if (todo.id !== "0" || index === 0) {
             this.todos.push({
@@ -341,6 +354,9 @@ export default {
         this.$set(this.load.loadMarkAsDoneButton, id, false);
       }
     },
+    openEtherscanTab: function() {
+      window.open('https://ropsten.etherscan.io/address/' + this.todoListContractAddress, '_blank');
+    }
   },
 };
 </script>

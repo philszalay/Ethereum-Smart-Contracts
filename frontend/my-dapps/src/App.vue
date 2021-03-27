@@ -4,12 +4,12 @@
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-app-bar-title>Dapps Universe</v-app-bar-title>
       <v-spacer></v-spacer>
-      <v-chip color="green" label>
+      <v-chip v-if="userAccount" color="green" label>
         Account: {{userAccount}}
       </v-chip>
-      <!-- <v-chip label color="primary">
-        <v-icon>mdi-wrench</v-icon>
-      </v-chip> -->
+      <v-chip v-else color='red' label>
+        Account not connected 
+      </v-chip>
     </v-app-bar>
     <v-main>
       <v-container v-if="!userAccount" fluid>
