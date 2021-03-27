@@ -3,7 +3,7 @@
     <h1 class="text-center">Todo List Dapp
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="primary" @click="openEtherscanTab()" v-bind="attrs" v-on="on" rounded small>
+          <v-btn color="" @click="openEtherscanTab()" v-bind="attrs" v-on="on" rounded small>
             <v-icon small>mdi-arrow-top-right</v-icon>
           </v-btn>
         </template>

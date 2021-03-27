@@ -10,31 +10,60 @@
       <v-chip v-else color='red' label>
         Account not connected 
       </v-chip>
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <a href="https://github.com/philszalay/Ethereum-Smart-Contracts" target="_blank" v-bind="attrs" v-on="on" class="margin-left">
+            <v-img :src="require('@/assets/images/GitHub-Mark-Light-32px.png')" class="github-icon" />
+          </a>
+        </template>
+        <span>View on GitHub</span>
+      </v-tooltip>
+      <template v-slot:extension>
+        <v-tabs
+          v-model="selectedDapp"
+          fixed-tabs
+        >
+          <v-tabs-slider></v-tabs-slider>
+          <v-tab>Todo List Dapp</v-tab>
+          <v-tab>ERC20 Token Creator</v-tab>
+          <v-tab>ERC721 Token Creator</v-tab>
+        </v-tabs>
+      </template>
     </v-app-bar>
     <v-main>
       <v-container v-if="!userAccount" fluid>
           <span>Please connect this Site with MetaMask</span>
       </v-container>
       <v-container v-else fluid>
-        <todo-list :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></todo-list>
+        <todo-list v-if="selectedDapp === 0" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></todo-list>
+        <erc-20-token-creator v-if="selectedDapp === 1" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-20-token-creator>
+        <erc-721-token-creator v-if="selectedDapp === 2" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-721-token-creator>
       </v-container>
     </v-main>
     <v-footer app>
-      
+      <v-col>
+        <span>&#169;<strong>{{currentYear}}</strong></span>
+      </v-col>
+      <!-- <v-col>
+        <a>Contact</a>
+      </v-col> -->
     </v-footer>
   </v-app>
 </template>
 
 <script>
 import TodoList from './components/TodoList';
+import Erc20TokenCreator from './components/Erc20TokenCreator'
+import Erc721TokenCreator from './components/Erc721TokenCreator'
 import Web3 from "web3";
 
 export default {
-
   name: 'App',
 
   components: {
     TodoList,
+    Erc20TokenCreator,
+    Erc721TokenCreator
   },
 
   data: () => ({
@@ -45,7 +74,9 @@ export default {
           new Web3.providers.HttpProvider(
             "https://ropsten.infura.io/v3/0ea14456f513454ea520fd84dc9083a9"
           )
-      )
+      ),
+    currentYear: new Date().getFullYear(),
+    selectedDapp: ''
   }),
   mounted: function() {
     window.ethereum.on('accountsChanged',(accounts) => {
@@ -63,3 +94,18 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+  .margin-left {
+    margin-left: 16px;
+  }
+
+  .margin-right {
+    margin-right: 16px;
+  }
+
+  .github-icon {
+    width: 24px;
+    height: 24px;
+  }
+</style>
