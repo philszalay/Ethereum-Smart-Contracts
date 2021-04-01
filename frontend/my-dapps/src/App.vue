@@ -1,7 +1,6 @@
 <template>
   <v-app id="inspire">
     <v-app-bar app>
-      <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-app-bar-title>Dapps Universe</v-app-bar-title>
       <v-spacer></v-spacer>
       <v-chip v-if="userAccount" color="green" label>
@@ -22,11 +21,12 @@
         <v-tabs
           v-model="selectedDapp"
           fixed-tabs
+          color="yellow"
         >
           <v-tabs-slider></v-tabs-slider>
-          <v-tab>Todo List Dapp</v-tab>
-          <v-tab>ERC20 Token Creator</v-tab>
-          <v-tab>ERC721 Token Creator</v-tab>
+          <v-tab class="yellow--text">Todo List Dapp</v-tab>
+          <v-tab class="yellow--text">ERC20 Token Generator</v-tab>
+          <v-tab class="yellow--text">ERC721 Token Generator</v-tab>
         </v-tabs>
       </template>
     </v-app-bar>
@@ -36,8 +36,8 @@
       </v-container>
       <v-container v-else fluid>
         <todo-list v-if="selectedDapp === 0" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></todo-list>
-        <erc-20-token-creator v-if="selectedDapp === 1" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-20-token-creator>
-        <erc-721-token-creator v-if="selectedDapp === 2" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-721-token-creator>
+        <erc-20-token-generator v-if="selectedDapp === 1" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-20-token-generator>
+        <erc-721-token-generator v-if="selectedDapp === 2" :key="todoListComponentKey" :web-three="web3" :user-account="userAccount"></erc-721-token-generator>
       </v-container>
     </v-main>
     <v-footer app>
@@ -53,8 +53,8 @@
 
 <script>
 import TodoList from './components/TodoList';
-import Erc20TokenCreator from './components/Erc20TokenCreator'
-import Erc721TokenCreator from './components/Erc721TokenCreator'
+import Erc20TokenGenerator from './components/Erc20TokenGenerator'
+import Erc721TokenGenerator from './components/Erc721TokenGenerator'
 import Web3 from "web3";
 
 export default {
@@ -62,8 +62,8 @@ export default {
 
   components: {
     TodoList,
-    Erc20TokenCreator,
-    Erc721TokenCreator
+    Erc20TokenGenerator,
+    Erc721TokenGenerator
   },
 
   data: () => ({
@@ -95,7 +95,11 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
+  .container {
+    margin-top: 24px;
+  }
+
   .margin-left {
     margin-left: 16px;
   }

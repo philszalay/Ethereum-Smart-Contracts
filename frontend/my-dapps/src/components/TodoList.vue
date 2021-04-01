@@ -1,9 +1,17 @@
 <template>
   <div>
-    <h1 class="text-center">Todo List Dapp
+    <h1 class="text-center">
+      Todo List Dapp
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn color="" @click="openEtherscanTab()" v-bind="attrs" v-on="on" rounded small>
+          <v-btn
+            color=""
+            @click="openEtherscanTab()"
+            v-bind="attrs"
+            v-on="on"
+            rounded
+            small
+          >
             <v-icon small>mdi-arrow-top-right</v-icon>
           </v-btn>
         </template>
@@ -11,42 +19,70 @@
       </v-tooltip>
     </h1>
     <v-row>
-    <v-spacer></v-spacer>
-    <v-col>
-      <v-form @submit.prevent="addTodo">
-        <v-text-field
-          v-model="todoTitleInput"
-          label="Add Todo"
-          required
-        ></v-text-field>
-        <v-btn type="submit" :loading="load.addTodo" :disabled="todoTitleInput.length === 0 || load.addTodo">Add Todo</v-btn>
-      </v-form>
-    </v-col>
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
+      <v-col>
+        <v-form @submit.prevent="addTodo">
+          <v-text-field
+            v-model="todoTitleInput"
+            label="Add Todo"
+            required
+          ></v-text-field>
+          <v-btn
+            type="submit"
+            :loading="load.addTodo"
+            :disabled="todoTitleInput.length === 0 || load.addTodo"
+            >Add Todo</v-btn
+          >
+        </v-form>
+      </v-col>
+      <v-spacer></v-spacer>
     </v-row>
     <v-row>
       <v-spacer></v-spacer>
-      <v-col>          
+      <v-col>
         <v-simple-table>
-        <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-left">Id</th>
-            <th class="text-left">Title</th>
-            <th class="text-left">Done</th>
-            <th class="text-right"><v-btn icon color="green" @click="updateTodos()"><v-icon>mdi-cached</v-icon></v-btn></th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(todo, index) in todos" :key="index">
-            <td>{{ todo.id }}</td>
-            <td>{{ todo.title }}</td>
-            <td><v-chip :color="todo.isDone ? 'green' : 'red'" label>{{ todo.isDone }}</v-chip></td>
-            <td class="text-right" v-if="!todo.isDone" @click="!load.loadMarkAsDoneButton[todo.id] ? markTodoAsDone(todo.id) : null"><v-btn color="primary" :loading="load.loadMarkAsDoneButton[todo.id]"  :disabled="load.loadMarkAsDoneButton[todo.id]">Mark as done</v-btn></td>
-            <td v-else></td>
-          </tr>
-        </tbody>
-        </template>
+          <template v-slot:default>
+            <thead>
+              <tr>
+                <th class="text-left">Id</th>
+                <th class="text-left">Title</th>
+                <th class="text-left">Done</th>
+                <th class="text-right">
+                  <v-btn icon color="green" @click="updateTodos()"
+                    ><v-icon>mdi-cached</v-icon></v-btn
+                  >
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(todo, index) in todos" :key="index">
+                <td>{{ todo.id }}</td>
+                <td>{{ todo.title }}</td>
+                <td>
+                  <v-chip :color="todo.isDone ? 'green' : 'red'" label>{{
+                    todo.isDone
+                  }}</v-chip>
+                </td>
+                <td
+                  class="text-right"
+                  v-if="!todo.isDone"
+                  @click="
+                    !load.loadMarkAsDoneButton[todo.id]
+                      ? markTodoAsDone(todo.id)
+                      : null
+                  "
+                >
+                  <v-btn
+                    color=""
+                    :loading="load.loadMarkAsDoneButton[todo.id]"
+                    :disabled="load.loadMarkAsDoneButton[todo.id]"
+                    >Mark as done</v-btn
+                  >
+                </td>
+                <td v-else></td>
+              </tr>
+            </tbody>
+          </template>
         </v-simple-table>
       </v-col>
       <v-spacer></v-spacer>
@@ -57,7 +93,7 @@
 <script>
 export default {
   name: "TodoList",
-  props: ['webThree', 'userAccount'],
+  props: ["webThree", "userAccount"],
   data() {
     return {
       todoListContractAddress: "0xaebdbd7a9A884e6B9040c68B61e00b2907Dacd26",
@@ -280,7 +316,7 @@ export default {
       this.todoListAbi,
       this.todoListContractAddress
     );
-      
+
     this.updateTodos();
   },
   methods: {
@@ -354,9 +390,12 @@ export default {
         this.$set(this.load.loadMarkAsDoneButton, id, false);
       }
     },
-    openEtherscanTab: function() {
-      window.open('https://ropsten.etherscan.io/address/' + this.todoListContractAddress, '_blank');
-    }
+    openEtherscanTab: function () {
+      window.open(
+        "https://ropsten.etherscan.io/address/" + this.todoListContractAddress,
+        "_blank"
+      );
+    },
   },
 };
 </script>
