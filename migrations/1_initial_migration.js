@@ -1,5 +1,5 @@
-const TodoList = artifacts.require("./TodoList.sol");
+const Contract = artifacts.require("./DappsUniverseFixedSupply.sol");
 
 module.exports = function (deployer) {
-  deployer.deploy(TodoList);
+  deployer.deploy(Contract);
 };
