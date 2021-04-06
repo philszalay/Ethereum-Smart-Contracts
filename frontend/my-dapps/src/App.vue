@@ -112,4 +112,9 @@ export default {
     width: 24px;
     height: 24px;
   }
+
+  .form-error-list {
+    color: red;
+    list-style-type:none;
+  }
 </style>
